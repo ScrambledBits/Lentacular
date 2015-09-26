@@ -1,0 +1,29 @@
+{
+  "name": "lentacular",
+  "version": "0.0.1",
+  "description": "A photo browser and manipulation app written in node.js and nw.js",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnQUnknown/Lentacular.git"
+  },
+  "keywords": [
+    "node.js",
+    "nw.js",
+    "photo",
+    "manipulation",
+    "photo",
+    "browser",
+    "tutorial",
+    "example"
+  ],
+  "author": "JohnQUnknown",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JohnQUnknown/Lentacular/issues"
+  },
+  "homepage": "https://github.com/JohnQUnknown/Lentacular#readme"
+}
