@@ -73,20 +73,46 @@ function addImageToPhotosArea(file) {
   photosArea.appendChild(clone);
 }
 
+function displayPhotoInFullView(photo) {
+  var filePath = photo.querySelector('img').src;
+  var fileName = photo.querySelector('img').attributes[1].value;
+  document.querySelector('#fullViewPhoto > img').src = filePath;
+  document.querySelector('#fullViewPhoto > img').setAttribute('data-name', fileName);
+  document.querySelector('#fullViewPhoto').style.display = 'block';
+}
+
+function backToGridView() {
+  document.querySelector('#fullViewPhoto').style.display = 'none';
+}
+
+function bindClickingOnAPhoto(photo) {
+  photo.onclick = function () {
+    displayPhotoInFullView(photo);
+  };
+}
+
+function bindClickingOnAllPhotos() {
+  var photos = document.querySelectorAll('.photo');
+  for (var i = 0; i < photos.length; i++) {
+    var photo = photos[i];
+    bindClickingOnAPhoto(photo);
+  }
+}
+
 window.onload = function() {
   bindSelectFolderClick(function(folderPath) {
     hideSelectFolderButton();
     findAllFiles(folderPath, function(err, files) {
-      console.log(err);
-      console.log(files);
       if (!err) {
         findImageFiles(files, folderPath, function(imageFiles) {
-          console.log('Image files!');
-          console.log(imageFiles);
-          imageFiles.forEach(addImageToPhotosArea);
+          imageFiles.forEach(function(file, index) {
+            addImageToPhotosArea(file);
+            if (index === imageFiles.length-1) {
+              bindClickingOnAllPhotos();
+            }
+          });
         });
       }
     });
-    console.log(folderPath);
   });
 }
