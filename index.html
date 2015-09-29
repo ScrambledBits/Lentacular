@@ -2,6 +2,7 @@
 	<head>
 		<title>Lentacular</title>
 		<link rel="stylesheet" href="app.css">
+		<script src="scripts/caman.full.min.js" charset="utf-8"></script>
 		<script src="app.js" charset="utf-8"></script>
 	</head>
 	<body>
@@ -16,9 +17,26 @@
 		</div>
 		<div id="photos"></div>
 		<div id="fullViewPhoto">
-			<img />
+			<img id="image" />
 			<div id="toolbar">
-				<div id="back" onclick="backToGridView();" >Go Back</div>
+				<!-- <div id="applyFilter" class="button" onclick="applyFilter();" >Apply Filter</div> -->
+				<div id="filterLaber">Filters</div>
+				<div class="filter" onclick="applyFilter('original');"  title="original">
+					<img src="images/original.png" alt="Original">
+				</div>
+				<div class="filter" onclick="applyFilter('grayscale');"  title="grayscale">
+					<img src="images/grayscale.png" alt="grayscale">
+				</div>
+				<div class="filter" onclick="applyFilter('sepia');"  title="sepia">
+					<img src="images/sepia.png" alt="sepia">
+				</div>
+				<div class="filter" onclick="applyFilter('sunburst');"  title="sunburst">
+					<img src="images/sunburst.png" alt="sunburst">
+			  </div>
+				<div class="filter" onclick="applyFilter('port');"  title="port">
+					<img src="images/port.png" alt="port">
+				</div>
+				<div id="back" class="button" onclick="backToGridView();" >Go Back</div>
 			</div>
 		</div>
 	</body>
