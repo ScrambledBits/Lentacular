@@ -2,6 +2,9 @@
 var fs = require('fs');
 var mime = require('mime');
 var path = require('path');
+var gui = require('nw.gui');
+
+var photoData = null;
 
 function openFolderDialog(cb) {
   var inputField = document.querySelector('#folderSelector');
@@ -66,7 +69,8 @@ function findImageFiles(files, folderPath, cb) {
 function addImageToPhotosArea(file) {
   var photosArea = document.getElementById('photos');
   var template = document.querySelector('#photo-template');
-  template.content.querySelector('img').src = file.path;
+  template.content.querySelector('img').src = 'images/blank.gif';
+  template.content.querySelector('img').setAttribute('data-echo', file.path);
   template.content.querySelector('img').setAttribute('data-name', file.name);
 
   var clone = window.document.importNode(template.content, true);
@@ -122,13 +126,37 @@ function applyFilter(filterName) {
   });
 }
 
+function saveToDisk() {
+  var photoSaver = document.querySelector('#photoSaver');
+  var canvas = document.querySelector('canvas');
+  photoSaver.setAttribute('nwsaveas', 'Edit of ' + canvas.attributes['data-name'].value);
+  photoData = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg|jpeg);base64,/, '');
+  console.log(photoData);
+  photoSaver.click();
+}
+
+function bindSavingToDisk() {
+  var photoSaver = document.querySelector('#photoSaver');
+  photoSaver.addEventListener('change', function () {
+    var filePath = this.value;
+    fs.writeFile(filePath, photoData, 'base64', function (err) {
+      if (err) {
+        alert('Oh noes! And error ocurred!\n Here\'s the details: ', err.message);
+      }
+      photoData = null;
+    });
+  });
+}
+
 function backToGridView() {
   var canvas = document.querySelector('canvas');
-  var image = document.createElement('img');
-  image.setAttribute('id', 'image');
-  canvas.parentNode.removeChild(canvas);
-  var fullViewPhoto = document.querySelector('#fullViewPhoto');
-  fullViewPhoto.insertBefore(image, fullViewPhoto.firstChild);
+  if (canvas) {
+    var image = document.createElement('img');
+    image.setAttribute('id', 'image');
+    canvas.parentNode.removeChild(canvas);
+    var fullViewPhoto = document.querySelector('#fullViewPhoto');
+    fullViewPhoto.insertBefore(image, fullViewPhoto.firstChild);
+  }
   document.querySelector('#fullViewPhoto').style.display = 'none';
 }
 
@@ -146,8 +174,72 @@ function bindClickingOnAllPhotos() {
   }
 }
 
+function clearArea() {
+  document.getElementById('photos').innerHTML = '';
+}
+
+function loadNewFolder() {
+  openFolderDialog(function (folderPath) {
+    findAllFiles(folderPath, function (err, files) {
+      if (!err) {
+        clearArea();
+        echo.init({
+          offset: 0,
+          throttle: 0,
+          unload: false
+        });
+        findImageFiles(files, folderPath, function (imageFiles) {
+          imageFiles.forEach(function (file, index) {
+            addImageToPhotosArea(file);
+            if (index === imageFiles.length-1) {
+              echo.render();
+              bindClickingOnAllPhotos();
+              bindSavingToDisk();
+            }
+          });
+        });
+      }
+    });
+  });
+}
+
+function loadMenu() {
+  var menuBar = new gui.Menu({ type: 'menubar' });
+  var menuItems = new gui.Menu();
+
+  menuItems.append(
+    new gui.MenuItem({
+      label: 'Change folder',
+      click: loadNewFolder
+    })
+  );
+
+  var fileMenu = new gui.MenuItem({
+    label: 'File',
+    submenu: menuItems
+  });
+
+  if (process.platform === 'darwin') {
+    //OSX
+    menuBar.createMacBuiltin('Lentacular');
+    menuBar.insert(fileMenu, 1);
+  } else {
+    //Windows/Linux
+    menuBar.append(fileMenu, 1);
+  }
+
+  gui.Window.get().menu = menuBar;
+}
+
 window.onload = function() {
+  echo.init({
+    offset: 0,
+    throttle: 0,
+    unload: false
+  });
+
   bindSelectFolderClick(function(folderPath) {
+    loadMenu();
     hideSelectFolderButton();
     findAllFiles(folderPath, function(err, files) {
       if (!err) {
@@ -156,6 +248,7 @@ window.onload = function() {
             addImageToPhotosArea(file);
             if (index === imageFiles.length-1) {
               bindClickingOnAllPhotos();
+              bindSavingToDisk();
             }
           });
         });

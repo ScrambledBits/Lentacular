@@ -3,6 +3,7 @@
 		<title>Lentacular</title>
 		<link rel="stylesheet" href="app.css">
 		<script src="scripts/caman.full.min.js" charset="utf-8"></script>
+		<script src="scripts/echo.min.js" charset="utf-8"></script>
 		<script src="app.js" charset="utf-8"></script>
 	</head>
 	<body>
@@ -11,6 +12,7 @@
 				<img />
 			</div>
 		</template>
+		<input type="file" nwsaveas id="photoSaver" />
 		<input type="file" nwdirectory id="folderSelector" />
 		<div id="select_folder">
 			<span>Select a folder with pictures</span>
@@ -37,6 +39,7 @@
 					<img src="images/port.png" alt="port">
 				</div>
 				<div id="back" class="button" onclick="backToGridView();" >Go Back</div>
+				<div id="save" class="button" onclick="saveToDisk();" >Save photo</div>
 			</div>
 		</div>
 	</body>
