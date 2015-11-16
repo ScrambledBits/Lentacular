@@ -7,4 +7,7 @@ browse pictures in your computer, apply filters and save the changes to a file i
 
 #The App
 Basically the app is a self contained WebView that allows interaction between the code and the OS to make use of its resources and APIs.
+It uses NodeJS libraries to read from the filesystem and write to the filesystem, as well as [CamanJS](http://camanjs.com/) for the photo filters.
 
+#Builds
+You can download the binaries from the [releases](https://github.com/JohnQUnknown/Lentacular/releases) section, there are binaries for Linux, Windows and OSX on 32 and 64 bits, these were compiled using NWJS.
